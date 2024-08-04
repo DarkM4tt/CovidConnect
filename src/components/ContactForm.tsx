@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-// import { useDispatch } from "react-redux";
-// import { addContact, editContact } from "../store/contactsSlice";
-import { Contact } from "../store/types";
-// import { v4 as uuidv4 } from "uuid";
+import { useDispatch } from "react-redux";
+import { addContact, editContact } from "../store/contactsSlice";
+import { Contact, ContactStatus } from "../store/types";
+import { v4 as uuidv4 } from "uuid";
 
 interface ContactFormProps {
   contactToEdit: Contact | null;
@@ -13,10 +13,12 @@ const ContactForm: React.FC<ContactFormProps> = ({
   contactToEdit,
   onCancelEdit,
 }) => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [firstName, setFirstName] = useState(contactToEdit?.firstName || "");
   const [lastName, setLastName] = useState(contactToEdit?.lastName || "");
-  const [status, setStatus] = useState(contactToEdit?.status || "inactive");
+  const [status, setStatus] = useState<ContactStatus>(
+    contactToEdit?.status || "Inactive"
+  );
 
   useEffect(() => {
     if (contactToEdit) {
@@ -28,16 +30,16 @@ const ContactForm: React.FC<ContactFormProps> = ({
 
   const handleSave = () => {
     if (firstName && lastName) {
-      // if (contactToEdit) {
-      //   dispatch(
-      //     editContact({ id: contactToEdit.id, firstName, lastName, status })
-      //   );
-      // } else {
-      //   dispatch(addContact({ id: uuidv4(), firstName, lastName, status }));
-      // }
+      if (contactToEdit) {
+        dispatch(
+          editContact({ id: contactToEdit.id, firstName, lastName, status })
+        );
+      } else {
+        dispatch(addContact({ id: uuidv4(), firstName, lastName, status }));
+      }
       setFirstName("");
       setLastName("");
-      setStatus("inactive");
+      setStatus("Inactive");
       onCancelEdit();
     }
   };
@@ -71,18 +73,18 @@ const ContactForm: React.FC<ContactFormProps> = ({
           <label className="flex items-center">
             <input
               type="radio"
-              value="active"
-              checked={status === "active"}
-              onChange={(e) => setStatus(e.target.value)}
+              value="Active"
+              checked={status === "Active"}
+              onChange={() => setStatus("Active")}
             />
             <span className="ml-2">Active</span>
           </label>
           <label className="flex items-center">
             <input
               type="radio"
-              value="inactive"
-              checked={status === "inactive"}
-              onChange={(e) => setStatus(e.target.value)}
+              value="Inactive"
+              checked={status === "Inactive"}
+              onChange={() => setStatus("Inactive")}
             />
             <span className="ml-2">Inactive</span>
           </label>

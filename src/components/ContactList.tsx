@@ -1,17 +1,14 @@
 import React from "react";
-// import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../store";
+import { deleteContact } from "../store/contactsSlice";
 import { Contact } from "../store/types";
-// import { RootState } from "../store";
-// import { deleteContact } from "../store/contactsSlice";
-// import { Contact } from "../types";
 
 const ContactList: React.FC<{ onEdit: (contact: Contact) => void }> = ({
   onEdit,
 }) => {
-  // const contacts = useSelector((state: any) => state.contacts);
-  // const dispatch = useDispatch();
-
-  let contacts: any = [];
+  const contacts = useSelector((state: RootState) => state.contacts);
+  const dispatch = useDispatch();
 
   return (
     <div className="flex flex-col items-center">
@@ -22,7 +19,7 @@ const ContactList: React.FC<{ onEdit: (contact: Contact) => void }> = ({
           <p>Please add contact from Create Contact Button</p>
         </div>
       ) : (
-        contacts.map((contact: any) => (
+        contacts.map((contact) => (
           <div
             key={contact.id}
             className="flex items-center mb-4 border p-4 rounded shadow-lg"
@@ -41,7 +38,7 @@ const ContactList: React.FC<{ onEdit: (contact: Contact) => void }> = ({
                 Edit
               </button>
               <button
-                // onClick={() => dispatch(deleteContact(contact.id))}
+                onClick={() => dispatch(deleteContact(contact.id))}
                 className="bg-red-500 text-white px-4 py-2 rounded"
               >
                 Delete
