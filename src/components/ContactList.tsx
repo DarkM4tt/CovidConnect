@@ -1,52 +1,27 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../store";
-import { deleteContact } from "../store/contactsSlice";
+import { useSelector } from "react-redux";
+import ContactCard from "./ContactCard";
 import { Contact } from "../store/types";
+import { RootState } from "../store";
 
-const ContactList: React.FC<{ onEdit: (contact: Contact) => void }> = ({
-  onEdit,
-}) => {
+interface ContactListProps {
+  onEdit: (contact: Contact) => void;
+  onDelete: (contactId: string) => void;
+}
+
+const ContactList: React.FC<ContactListProps> = ({ onEdit, onDelete }) => {
   const contacts = useSelector((state: RootState) => state.contacts);
-  const dispatch = useDispatch();
 
   return (
-    <div className="flex flex-col items-center">
-      {contacts.length === 0 ? (
-        <div className="text-center">
-          <div className="text-6xl text-red-600">✖</div>
-          <p>No Contact Found</p>
-          <p>Please add contact from Create Contact Button</p>
-        </div>
-      ) : (
-        contacts.map((contact) => (
-          <div
-            key={contact.id}
-            className="flex items-center mb-4 border p-4 rounded shadow-lg"
-          >
-            <div className="flex-1">
-              <h2 className="text-xl">
-                {contact.firstName} {contact.lastName}
-              </h2>
-              <p>Status: {contact.status}</p>
-            </div>
-            <div className="flex space-x-4">
-              <button
-                onClick={() => onEdit(contact)}
-                className="bg-green-500 text-white px-4 py-2 rounded"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => dispatch(deleteContact(contact.id))}
-                className="bg-red-500 text-white px-4 py-2 rounded"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))
-      )}
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {contacts.map((contact) => (
+        <ContactCard
+          key={contact.id}
+          contact={contact}
+          onEdit={() => onEdit(contact)}
+          onDelete={() => onDelete(contact.id)}
+        />
+      ))}
     </div>
   );
 };

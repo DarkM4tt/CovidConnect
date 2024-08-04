@@ -10,12 +10,12 @@ const Header: React.FC = () => {
       case "/charts-and-maps":
         return "Charts and Maps";
       default:
-        return "Contact Management App";
+        return "Contacts";
     }
   };
 
   return (
-    <header className="p-4 border-b-2 border-gray-200">
+    <header className="py-6 border-b-2 border-gray-200">
       <h1 className="text-2xl text-center">{getTitle()}</h1>
     </header>
   );

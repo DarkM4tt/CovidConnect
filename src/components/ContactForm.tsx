@@ -7,11 +7,13 @@ import { v4 as uuidv4 } from "uuid";
 interface ContactFormProps {
   contactToEdit: Contact | null;
   onCancelEdit: () => void;
+  onSave: () => void;
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({
   contactToEdit,
   onCancelEdit,
+  onSave,
 }) => {
   const dispatch = useDispatch();
   const [firstName, setFirstName] = useState(contactToEdit?.firstName || "");
@@ -19,6 +21,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
   const [status, setStatus] = useState<ContactStatus>(
     contactToEdit?.status || "Inactive"
   );
+
+  const isFormValid = firstName.length >= 3 && lastName.length >= 3;
 
   useEffect(() => {
     if (contactToEdit) {
@@ -40,15 +44,21 @@ const ContactForm: React.FC<ContactFormProps> = ({
       setFirstName("");
       setLastName("");
       setStatus("Inactive");
+      onSave();
       onCancelEdit();
     }
   };
 
   return (
-    <div className="border p-4 rounded shadow-md max-w-sm mx-auto">
-      <h2 className="text-xl mb-4">
-        {contactToEdit ? "Edit Contact" : "Create Contact"}
-      </h2>
+    <div className="">
+      <div className="flex justify-between items-center cursor-pointer mb-8">
+        <h2 className="text-3xl">
+          {contactToEdit ? "Edit Contact" : "Create Contact"}
+        </h2>
+        <p className="text-xl font-bold" onClick={onCancelEdit}>
+          X
+        </p>
+      </div>
       <div className="mb-4">
         <label className="block mb-2">First Name</label>
         <input
@@ -92,12 +102,15 @@ const ContactForm: React.FC<ContactFormProps> = ({
       </div>
       <button
         onClick={handleSave}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className={`${
+          !isFormValid ? "bg-gray-300" : "bg-black"
+        } text-white px-4 py-2 rounded mt-4`}
+        disabled={!isFormValid}
       >
         Save Contact
       </button>
       {contactToEdit && (
-        <button onClick={onCancelEdit} className="ml-4 text-gray-700 underline">
+        <button onClick={onCancelEdit} className="ml-4 text-red-500">
           Cancel
         </button>
       )}

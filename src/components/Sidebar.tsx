@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 const Sidebar: React.FC = () => {
   return (
     <div className="w-64 bg-gray-800 text-white h-full">
-      <nav className="mt-10">
+      <nav className="mt-10 ml-2">
         <ul>
-          <li className="mb-2">
+          <li className="mb-5">
             <Link
               to="/contacts"
               className="text-lg font-medium hover:underline"
