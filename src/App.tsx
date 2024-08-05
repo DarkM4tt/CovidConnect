@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import ContactPage from "./pages/ContactPage";
 import ChartsAndMaps from "./pages/ChartsAndMaps";
+import "leaflet/dist/leaflet.css";
 import "./App.css";
 
 const App: React.FC = () => {

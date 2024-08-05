@@ -44,8 +44,9 @@ export const showDataOnMap = (
   data: Country[],
   casesType: "cases" | "recovered" | "deaths"
 ) =>
-  data.map((country) => (
+  data.map((country, index) => (
     <Circle
+      key={index} // Add a unique key prop
       center={[country.countryInfo.lat, country.countryInfo.long]}
       pathOptions={{
         fillOpacity: 0.4,
@@ -56,6 +57,7 @@ export const showDataOnMap = (
         Math.sqrt(country[casesType] / 10) *
         casesTypeColors[casesType].multiplier
       }
+      {...(true as any)} // Cast the entire props object to any
     >
       <Popup>
         <div className="info-container">

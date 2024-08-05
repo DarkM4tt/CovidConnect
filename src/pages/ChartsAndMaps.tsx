@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Map from "../components/Map";
 
 interface CountryInfo {
@@ -15,30 +15,35 @@ interface Country {
   deaths: number;
 }
 
+const fetchCountriesData = async (): Promise<Country[]> => {
+  const response = await fetch("https://disease.sh/v3/covid-19/countries");
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return response.json();
+};
+
 const ChartsAndMaps: React.FC = () => {
-  const [mapCountries, setMapCountries] = useState<Country[]>([]);
-  const [casesType, setCasesType] = useState<"cases" | "recovered" | "deaths">(
-    "cases"
-  );
+  const {
+    data: mapCountries = [],
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["countriesData"],
+    queryFn: fetchCountriesData,
+  });
 
-  useEffect(() => {
-    const getCountriesData = async () => {
-      try {
-        const response = await fetch(
-          "https://disease.sh/v3/covid-19/countries"
-        );
-        const data: Country[] = await response.json();
-        setMapCountries(data);
-      } catch (error) {
-        console.error("Failed to fetch countries data:", error);
-      }
-    };
-
-    getCountriesData();
-  }, []);
-
+  const casesType = "cases";
   const mapCenter: [number, number] = [34.80746, -40.4796];
   const zoom: number = 3;
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error fetching data: {error.message}</p>;
+  }
 
   return (
     <div>
