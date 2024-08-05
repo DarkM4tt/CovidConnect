@@ -1,14 +1,17 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import ContactForm from "../components/ContactForm";
 import ContactList from "../components/ContactList";
 import { Contact } from "../store/types";
 import { deleteContact } from "../store/contactsSlice";
+import { RootState } from "../store";
+import CrossIcon from "../assets/cross.svg";
 
 const ContactPage: React.FC = () => {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const dispatch = useDispatch();
+  const contacts = useSelector((state: RootState) => state.contacts);
 
   const handleEditContact = (contact: Contact) => {
     setSelectedContact(contact);
@@ -33,28 +36,18 @@ const ContactPage: React.FC = () => {
     setIsEditing(true);
   };
 
-  const handleContainerClick = (e: any) => {
-    e.stopPropagation();
-  };
-
   return (
     <div className="p-4">
       <button
         onClick={handleAddContact}
         className="bg-black text-white px-4 py-2 rounded mb-4"
       >
-        + Add Contact
+        + Create Contact
       </button>
 
       {isEditing && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-          onClick={handleCancelEdit}
-        >
-          <div
-            className="bg-white p-6 rounded-lg shadow-lg w-[20%]"
-            onClick={handleContainerClick}
-          >
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[20%]">
             <ContactForm
               contactToEdit={selectedContact}
               onCancelEdit={handleCancelEdit}
@@ -64,7 +57,27 @@ const ContactPage: React.FC = () => {
         </div>
       )}
 
-      <ContactList onEdit={handleEditContact} onDelete={handleDeleteContact} />
+      {contacts.length === 0 ? (
+        <>
+          <div className="text-center text-gray-600 mt-[10%]">
+            <img
+              src={CrossIcon}
+              alt="cross"
+              width={100}
+              className="ml-[45%] mb-4"
+            />
+            <p>
+              No contacts found. Please add a contact using the "Create Contact"
+              button.
+            </p>
+          </div>
+        </>
+      ) : (
+        <ContactList
+          onEdit={handleEditContact}
+          onDelete={handleDeleteContact}
+        />
+      )}
     </div>
   );
 };
